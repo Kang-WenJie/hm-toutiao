@@ -7,7 +7,11 @@ import JSONBIGINT from 'json-bigint'
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 axios.defaults.transformResponse = [(data) => {
   // data json格式的字符串
-  return JSONBIGINT.parse(data)
+  try {
+    return JSONBIGINT.parse(data)
+  } catch (e) {
+    return data
+  }
 }]
 // 2. 请求头 token
 axios.interceptors.request.use(config => {
@@ -21,11 +25,10 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(res => res, err => {
   // 自己逻辑
   // 1. 获取状态码
-  const status = err.response.status
+
   // 2. 判断401
-  if (status === 401) {
+  if (err.response && err.response.status === 401) {
     // 3. 清除无效token
-    store.delUser()
     // 4. 跳转登录
     // 4.1 原生方式改路径  router基于hash实现  /login ===> #/login
     // window.location.hash = '#/login'
