@@ -5,7 +5,7 @@
       </div>
       <!-- 导航菜单 -->
       <el-menu
-        default-active="/wel"
+        :default-active="$route.path"
         class="el-menu-vertical-demo"
         background-color="#002033"
         text-color="#fff"
@@ -52,16 +52,16 @@
 
         <el-dropdown class="el-dropdown">
           <span class="el-dropdown-link">
-          <img src="../../assets/avatar.jpg" alt="">
-            <span class="name">用户名称</span>
+          <img :src='photo' alt="">
+            <span class="name">{{name}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人设置</el-dropdown-item>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item @click.native="setting">个人设置</el-dropdown-item>
+            <el-dropdown-item @click.native="out">退出登录</el-dropdown-item>
+
           </el-dropdown-menu>
         </el-dropdown>
-
       </el-header>
 
       <el-main>
@@ -74,17 +74,33 @@
 <script>
 import img01 from '../../assets/logo_admin.png'
 import img02 from '../../assets/logo_admin_01.png'
+import store from '@/store'
 export default {
   data () {
     return {
       img1: '<img src="' + img01 + '">',
       img2: '<img src="' + img02 + '">',
-      flag: false
+      flag: false,
+      name: '',
+      photo: ''
     }
+  },
+  created () {
+    this.name = store.getUser().name
+    this.photo = store.getUser().photo
   },
   methods: {
     toggle () {
       this.flag = !this.flag
+    },
+    setting () {
+      this.$router.push('/setting')
+    },
+    out () {
+      if (confirm('确定要退出登录吗？')) {
+        store.delUser()
+        this.$router.push('/login')
+      }
     }
   }
 }

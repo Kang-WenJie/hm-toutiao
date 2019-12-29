@@ -48,20 +48,27 @@ export default {
   },
   methods: {
     login (log) {
-      this.$refs[log].validate((valid) => {
+      this.$refs[log].validate(async (valid) => {
         if (valid) {
           // 校验成功  调用登录接口
-          this.$http.post('http://ttapi.research.itcast.cn/mp/v1_0/authorizations', { mobile: this.form.phone, code: this.form.yzm })
-            .then(res => {
-              // 成功 跳转
-              // 注意 登录 不够完善
-              store.setUser(res.data.data)
-              this.$router.push('/')
-            })
-            .catch(() => {
-              // 失败 提示
-              this.$message.error('手机号或验证码错误')
-            })
+          // this.$http.post('http://ttapi.research.itcast.cn/mp/v1_0/authorizations', { mobile: this.form.phone, code: this.form.yzm })
+          //   .then(res => {
+          //     // 成功 跳转
+          //     // 注意 登录 不够完善
+          //     store.setUser(res.data.data)
+          //     this.$router.push('/')
+          //   })
+          //   .catch(() => {
+          //     // 失败 提示
+          //     this.$message.error('手机号或验证码错误')
+          //   })
+          try {
+            const res = await this.$http.post('authorizations', { mobile: this.form.phone, code: this.form.yzm })
+            store.setUser(res.data.data)
+            this.$router.push('/')
+          } catch (e) {
+            this.$message.error('手机号或验证码错误')
+          }
         }
       })
     }
