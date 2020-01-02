@@ -75,6 +75,7 @@
 import img01 from '../../assets/logo_admin.png'
 import img02 from '../../assets/logo_admin_01.png'
 import store from '@/store'
+import eventBus from '@/eventBus'
 export default {
   data () {
     return {
@@ -88,6 +89,12 @@ export default {
   created () {
     this.name = store.getUser().name
     this.photo = store.getUser().photo
+    eventBus.$on('updateUserName', (name) => {
+      this.name = name
+    })
+    eventBus.$on('updateUserPhoto', (photo) => {
+      this.photo = photo
+    })
   },
   methods: {
     toggle () {
